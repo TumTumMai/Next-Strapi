@@ -18,6 +18,8 @@ function Login() {
             identifier: username,
             password: password
         }
+
+
         axios
             .post(url, loginInfo)
             .then((res) => {
@@ -30,7 +32,7 @@ function Login() {
                 })
 
                 alert("Login Sucsess");
-                Router.push('/calen/calendar')
+                Router.push('/Calen/calendar')
 
             })
             .catch(() => alert("Login Failure"));
@@ -39,10 +41,7 @@ function Login() {
 
     return (
         <>
-        <Navbar
-            
-            />
-
+            <Navbar></Navbar>
             <div className='p-8 justify-center items-center h-screen flex bg-blue-400 '>
 
                 <form>

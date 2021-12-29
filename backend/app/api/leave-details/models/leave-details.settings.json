@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leave_details",
+  "info": {
+    "name": "Leave-details"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Leavedaystart": {
+      "type": "date"
+    },
+    "Leavedayend": {
+      "type": "date"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}
