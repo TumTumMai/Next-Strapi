@@ -1,121 +1,108 @@
-
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-// import { parseCookies, destroyCookie } from 'nookies'
+import axios from "axios";
+import { useEffect, useState } from "react";
+// import { parseCookies, destroyCookie } from "nookies";
 // import nookies from 'nookies'
-// import Router from 'next/router'
-// import FullCalendar from '@fullcalendar/react'
-// import interactionPlugin from '@fullcalendar/interaction'
-// import timeGridPlugin from '@fullcalendar/timegrid'
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
-import "react-big-calendar/lib/css/react-big-calendar.css"
-import Navbar from '../../components/navbar';
-// import { ILeavedata, Leaveday } from '../../services/Leaveday'
-// import events from '../components/events'
+// import Router from "next/router";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+// import Navbar from "../../components/navbar";
+// import { ILeavedata, ILeaveday, Leaveday } from '../../services/Leaveday'
+// import { ILeavedata, ILeaveday } from "../../models/leaveday";
+import { IHoliday, IHolidayData } from "models/holi.day";
 
 // import events from '../components/'
 
-
-const localizer = momentLocalizer(moment)
-
+const localizer = momentLocalizer(moment);
 
 function calendar() {
+  const Holiday = async (token: string) => {
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    // process.env.NEXT_PUBLIC_API_URL
+    // `${url}/leave-datails`
+    let data: IHolidayData[] = [];
 
-    // const [buttoncolor] = useState("bg-blue-500") ///เอาไวเปลี่ยนค่าในinput
-     interface ILeaveday {
-        id: number;
-        published_at: Date;
-        created_at: Date;
-        updated_at: Date;
-        Leavedaystart: string;
-        Leavedayend: string;
-        title: string;
+    return axios
+      .get<IHoliday>(`${url}/api/holiday-datails`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((res) => {
+        // console.log(res);
+        data = res.data.data.map((d) => {
+          return {
+            id: d.id,
+            title: d.attributes.title,
+            start: new Date(d.attributes.holidaystart),
+            end: new Date(d.attributes.holidayend),
+          };
+        });
+        // console.log(data)
+        return data;
+      })
+
+      .catch();
+  };
+
+  const [holiday, setHoliday] = useState<IHolidayData[]>();
+  useEffect(() => {
+    const token = localStorage.getItem("datalocalstorage");
+    if (!token) {
+      return;
     }
-     interface ILeavedata {
-        id: number;
-        title: string;
-        start: Date;
-        end: Date;
-    }
-     const Leaveday = async (token: string) => {
-    
-        const url = process.env.NEXT_PUBLIC_API_URL;
-        let data: ILeavedata[] = []
-    
-        return axios
-            .get<ILeaveday[]>(`${url}/leave-details`, {
-                headers: {
-                    Authorization: "Bearer " + token,
-                },
-            })
-            .then((res) => {
-                // console.log(res)
-                data = res.data.map(d => {
-                    return {
-                        id: d.id,
-                        title: d.title,
-                        start: new Date(d.Leavedaystart),
-                        end: new Date(d.Leavedayend)
-                    }
-                })
-                // console.log(data)
-                return data
-    
-            })
-    
-            .catch();
-    
-    
-    }
-    
+    const toketobj = JSON.parse(token);
+    let ld: IHolidayData[] = [];
+    Holiday(toketobj.jwt).then((res) => {
+      ld = res;
+      setHoliday(ld);
+      console.log(ld);
+    });
+    // console.log(ld)
 
-
-    const [leaveday, setLeaveday] = useState<ILeavedata[]>()
-    useEffect(() => {
-        const token = localStorage.getItem("datalocalstorage")
-        if (!token) {
-            return
-        }
-        const toketobj = JSON.parse(token)
-        let ld: ILeavedata[] = []
-        Leaveday(toketobj.jwt).then((res) => {
-            ld = res
-            setLeaveday(ld)
-            console.log(ld)
-
-        })
-        // console.log(ld)
-
-        // console.log(token)
-    }, [])
-    // let token = localStorage.getItem("datalocalstorage")
-    // let leaveday = Leaveday()
     // console.log(token)
+  }, []);
+  // let token = localStorage.getItem("datalocalstorage")
+  // let leaveday = Leaveday()
+  // console.log(token)
 
-    return (
-        < >
-            <Navbar></Navbar>
-            <div style={{ width: '100%', height: '70px' }}></div>
-            <div className="bg-green-100 ">
-                <Calendar
-                    localizer={localizer}
-                    events={leaveday as any}
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{
-                        height: 600,
-                        // color: "blue"
-                    }}
-                />
+  const calendarStyle = () => {
+    return {
+      style: {
+        backgroundColor: "#dcfce7",
+      },
+    };
+  };
+  //
 
-            </div>
-
-        </>
-    );
+  return (
+    <>
+      {/* <Navbar></Navbar> */}
+      {/* <div style={{ width: "100%", height: "70px" }}></div> */}
+      <div className="bg-green-100 ">
+        <Calendar
+          localizer={localizer}
+          events={holiday}
+          startAccessor="start"
+          endAccessor="end"
+          style={{
+            height: 600,
+          }}
+          eventPropGetter={(event, start, end, isSelected) => ({
+            event,
+            start,
+            end,
+            isSelected,
+            style: { backgroundColor: "#ff3333" },
+          })}
+          dayPropGetter={calendarStyle}
+        />
+        {/* <div className='p-8 justify-center items-center flex'>
+                    <button type="button" onClick={() => handleLogout()} className={[buttoncolor, 'text-white font-bold py-2 px-4 rounded'].join(" ")}>Logout</button>
+                </div> */}
+      </div>
+    </>
+  );
 }
-
-
-
 
 export default calendar;

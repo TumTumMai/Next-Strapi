@@ -3,7 +3,6 @@ import { useState, FC, useContext } from "react";
 // import { setCookie } from "nookies";
 // import Router from "next/router";
 import { AuthContext } from "stores/authContext";
-import WEB_PATHS from "constants/webPaths";
 
 const Navbar: FC = ({ children }) => {
   const [active, setActive] = useState(false);
@@ -17,15 +16,15 @@ const Navbar: FC = ({ children }) => {
   //     setIsLogin(true);
   //   }
   // }, []);
-  // console.log(WEB_PATHS.CALENDAR);
+
   const handleClick = () => {
     setActive(!active);
   };
 
   return (
     <>
-      <nav className="flex items-center flex-wrap bg-green-400 p-3  ">
-        <Link href={WEB_PATHS.HOME}>
+      <nav className="flex items-center flex-wrap bg-green-400 p-3 fixed w-full">
+        <Link href="/">
           <a className="inline-flex items-center p-2 mr-4 ">
             {/* <svg
                 viewBox='0 0 24 24'
@@ -64,13 +63,13 @@ const Navbar: FC = ({ children }) => {
           }   w-full lg:inline-flex lg:flex-grow lg:w-auto`}
         >
           <div className="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start  flex flex-col lg:h-auto">
-            <Link href={WEB_PATHS.HOME}>
+            <Link href="/">
               <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-green-600 hover:text-white ">
                 Home
               </a>
             </Link>
             {!authContext.isAuth ? (
-              <Link href={WEB_PATHS.LOGIN}>
+              <Link href="/login">
                 <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-green-600 hover:text-white">
                   Login
                 </a>
@@ -93,7 +92,7 @@ const Navbar: FC = ({ children }) => {
                                 {islogin ? 'Logout' : 'Login'}
                             </a>
                         </Link> */}
-            <Link href={WEB_PATHS.CALENDAR}>
+            <Link href="/backoffices/calendar">
               <a className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-white font-bold items-center justify-center hover:bg-green-600 hover:text-white">
                 Calendar
               </a>
